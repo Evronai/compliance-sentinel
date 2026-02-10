@@ -16,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS with safe HTML rendering
+# Custom CSS with better contrast
 st.markdown("""
 <style>
     /* Main styles */
@@ -38,14 +38,14 @@ st.markdown("""
     
     .section-header {
         font-size: 1.3rem;
-        color: #4B5563;
+        color: #1F2937;
         margin: 1.5rem 0 0.8rem 0;
         font-weight: 600;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #E5E7EB;
     }
     
-    /* Cards */
+    /* Cards - FIXED: Better contrast */
     .info-card {
         background: #FFFFFF;
         border: 1px solid #E5E7EB;
@@ -53,10 +53,11 @@ st.markdown("""
         border-radius: 10px;
         margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        color: #374151;
     }
     
     .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #3B82F6;
         padding: 1.5rem;
         border-radius: 10px;
         color: white;
@@ -70,11 +71,44 @@ st.markdown("""
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid #3B82F6;
+        color: #374151;
+    }
+    
+    /* Text boxes - FIXED: White background with dark text */
+    .stTextArea textarea,
+    .stTextInput input {
+        background-color: white !important;
+        color: #1F2937 !important;
+        border: 1px solid #D1D5DB !important;
+    }
+    
+    .stTextArea textarea:focus,
+    .stTextInput input:focus {
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    }
+    
+    /* Form labels */
+    .stTextArea label,
+    .stTextInput label,
+    .stSelectbox label,
+    .stDateInput label,
+    .stTimeInput label {
+        color: #1F2937 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Placeholder text */
+    .stTextArea textarea::placeholder,
+    .stTextInput input::placeholder {
+        color: #6B7280 !important;
+        opacity: 0.8 !important;
     }
     
     /* Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #3B82F6;
         color: white;
         font-weight: bold;
         border: none;
@@ -84,8 +118,14 @@ st.markdown("""
     }
     
     .stButton > button:hover {
+        background: #2563EB;
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stButton > button:disabled {
+        background: #9CA3AF;
+        color: #D1D5DB;
     }
     
     /* Status boxes */
@@ -139,17 +179,45 @@ st.markdown("""
         margin: 0.5rem 0;
         border-radius: 6px;
         border-left: 3px solid #3B82F6;
+        color: #1F2937;
     }
     
-    /* Lists */
-    .bullet-list {
-        padding-left: 1.5rem;
-        margin: 0.5rem 0;
+    /* Select boxes and dropdowns */
+    .stSelectbox div[data-baseweb="select"] {
+        background-color: white !important;
     }
     
-    .bullet-list li {
-        margin: 0.3rem 0;
-        color: #4B5563;
+    .stSelectbox div[data-baseweb="select"] input {
+        color: #1F2937 !important;
+    }
+    
+    /* Date and time inputs */
+    .stDateInput input,
+    .stTimeInput input {
+        background-color: white !important;
+        color: #1F2937 !important;
+        border: 1px solid #D1D5DB !important;
+    }
+    
+    /* Checkboxes */
+    .stCheckbox label {
+        color: #1F2937 !important;
+    }
+    
+    /* Radio buttons */
+    .stRadio label {
+        color: #1F2937 !important;
+    }
+    
+    /* Slider */
+    .stSlider label {
+        color: #1F2937 !important;
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        color: #1F2937 !important;
+        font-weight: 600 !important;
     }
     
     /* Tables */
@@ -170,6 +238,7 @@ st.markdown("""
     .data-table td {
         padding: 0.8rem;
         border: 1px solid #E5E7EB;
+        color: #374151;
     }
     
     .data-table tr:nth-child(even) {
@@ -200,6 +269,35 @@ st.markdown("""
         background: #D1FAE5;
         color: #059669;
     }
+    
+    /* Fix for Streamlit's default text colors */
+    .stMarkdown p {
+        color: #374151 !important;
+    }
+    
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
+        color: #1F2937 !important;
+    }
+    
+    /* Sidebar fixes */
+    .css-1d391kg {
+        color: #1F2937 !important;
+    }
+    
+    /* Metric cards in sidebar */
+    .css-1xarl3l {
+        color: #1F2937 !important;
+    }
+    
+    /* Fix input field text color globally */
+    input, textarea, select {
+        color: #1F2937 !important;
+    }
+    
+    /* Override any white text on white background */
+    * {
+        color: #1F2937 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -215,7 +313,7 @@ if 'usage_stats' not in st.session_state:
         'total_tokens': 0
     }
 if 'demo_mode' not in st.session_state:
-    st.session_state.demo_mode = True  # Default to demo mode
+    st.session_state.demo_mode = True
 
 # ==================== DEEPSEEK API CLIENT ====================
 class DeepSeekAPIClient:
@@ -287,7 +385,7 @@ class DeepSeekAPIClient:
     
     def get_demo_response(self):
         """Return a demo response for testing"""
-        demo_analysis = """# 🏢 COMPLIANCE SENTINEL - INCIDENT ANALYSIS REPORT
+        demo_analysis = f"""# 🏢 COMPLIANCE SENTINEL - INCIDENT ANALYSIS REPORT
 
 ## 📋 Executive Summary
 A slip incident occurred in Sector B involving an unremediated oil leak, posing significant safety risks. Immediate containment and systemic maintenance process improvements are required to prevent recurrence.
@@ -303,7 +401,7 @@ A slip incident occurred in Sector B involving an unremediated oil leak, posing 
 |--------|-------|
 | **Severity** | Level 3 - Serious |
 | **Location** | Manufacturing Floor, Sector B |
-| **Date** | """ + datetime.now().strftime('%d %B %Y') + """ |
+| **Date** | {datetime.now().strftime('%d %B %Y')} |
 | **Root Cause** | Unaddressed maintenance work order |
 | **Potential Impact** | Major injury (fracture/laceration) |
 
@@ -399,7 +497,7 @@ A slip incident occurred in Sector B involving an unremediated oil leak, posing 
 ---
 *Report generated by Compliance Sentinel AI Analysis System*
 *Confidential - For Internal Use Only*
-*Generated: """ + datetime.now().strftime('%d %B %Y, %H:%M:%S') + """*"""
+*Generated: {datetime.now().strftime('%d %B %Y, %H:%M:%S')}*"""
         
         return {
             "success": True,
@@ -419,7 +517,7 @@ def render_header():
     st.markdown("""
     <div style='text-align: center; color: #6B7280; margin-bottom: 2rem;'>
         <h3 style='color: #4B5563; font-weight: 500;'>Institutional-Grade HSE, ESG & Compliance Analysis</h3>
-        <p style='font-size: 1.1rem;'>Powered by DeepSeek AI • PwC-Style Reporting • Enterprise Ready</p>
+        <p style='font-size: 1.1rem; color: #6B7280;'>Powered by DeepSeek AI • PwC-Style Reporting • Enterprise Ready</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -430,7 +528,7 @@ def render_sidebar():
         st.markdown("""
         <div style='text-align: center; margin-bottom: 2rem;'>
             <div style='font-size: 3rem;'>🛡️</div>
-            <h3>Compliance Sentinel</h3>
+            <h3 style='color: #1F2937;'>Compliance Sentinel</h3>
         </div>
         """, unsafe_allow_html=True)
         
@@ -494,151 +592,213 @@ def render_incident_form():
     """Render incident analysis form"""
     st.markdown('<div class="sub-header">🚨 Incident Analysis Report</div>', unsafe_allow_html=True)
     
+    # Initialize form data in session state if not exists
+    if 'incident_data' not in st.session_state:
+        st.session_state.incident_data = {
+            'description': '',
+            'severity': '3 - Serious',
+            'location': '',
+            'reported_by': ''
+        }
+    
     with st.container():
-        # Form in columns
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            with st.form("incident_form"):
-                # Incident Description
-                st.markdown("### 📝 Incident Details")
-                description = st.text_area(
-                    "**Describe the incident**",
-                    height=150,
-                    placeholder="Provide detailed information about what happened, who was involved, immediate circumstances, and any initial response taken...",
-                    help="Be specific and factual. Include date, time, location, people involved, and sequence of events."
+            # Incident Description - FIXED: Now visible
+            st.markdown("### 📝 Incident Details")
+            
+            # Use st.text_area with explicit styling
+            description = st.text_area(
+                "**Describe the incident**",
+                height=150,
+                placeholder="Provide detailed information about what happened, who was involved, immediate circumstances, and any initial response taken...",
+                help="Be specific and factual. Include date, time, location, people involved, and sequence of events.",
+                value=st.session_state.incident_data['description'],
+                key="incident_description"
+            )
+            
+            # Update session state
+            st.session_state.incident_data['description'] = description
+            
+            # Quick templates
+            with st.expander("📋 Load Template", expanded=False):
+                template = st.selectbox(
+                    "Choose template",
+                    ["Select...", "Slip/Trip/Fall", "Equipment Failure", "Chemical Spill", "Near Miss"],
+                    key="template_select"
+                )
+                if template != "Select...":
+                    templates = {
+                        "Slip/Trip/Fall": "Worker slipped on an oil patch near CNC Machine #5 while transporting finished parts. No major injury reported, but worker complained of sore wrist. Oil leak had been reported to maintenance 48 hours prior. Area was not cordoned off.",
+                        "Equipment Failure": "Press machine emergency stop failed during operation. Operator had to power down entire line. No injury occurred. Last maintenance was 2 weeks ago.",
+                        "Chemical Spill": "Container of industrial solvent tipped over in storage area. Small spill on floor. No injuries. Spill kit was used but missing absorbent pads.",
+                        "Near Miss": "Overhead crane load swung near workers. No contact made. Load was improperly secured. Area was evacuated immediately."
+                    }
+                    st.session_state.incident_data['description'] = templates[template]
+                    st.rerun()
+            
+            # Additional Information
+            st.markdown("### 🔍 Additional Information")
+            col_info1, col_info2 = st.columns(2)
+            
+            with col_info1:
+                severity = st.select_slider(
+                    "**Severity Level**",
+                    options=["1 - Minor", "2 - Moderate", "3 - Serious", "4 - Severe", "5 - Critical"],
+                    value=st.session_state.incident_data.get('severity', '3 - Serious'),
+                    help="Based on actual or potential harm severity",
+                    key="severity_slider"
                 )
                 
-                # Quick templates
-                with st.expander("📋 Load Template"):
-                    template = st.selectbox(
-                        "Choose template",
-                        ["Select...", "Slip/Trip/Fall", "Equipment Failure", "Chemical Spill", "Near Miss"]
-                    )
-                    if template != "Select...":
-                        templates = {
-                            "Slip/Trip/Fall": "Worker slipped on an oil patch near CNC Machine #5 while transporting finished parts. No major injury reported, but worker complained of sore wrist. Oil leak had been reported to maintenance 48 hours prior. Area was not cordoned off.",
-                            "Equipment Failure": "Press machine emergency stop failed during operation. Operator had to power down entire line. No injury occurred. Last maintenance was 2 weeks ago.",
-                            "Chemical Spill": "Container of industrial solvent tipped over in storage area. Small spill on floor. No injuries. Spill kit was used but missing absorbent pads.",
-                            "Near Miss": "Overhead crane load swung near workers. No contact made. Load was improperly secured. Area was evacuated immediately."
-                        }
-                        description = templates[template]
+                location = st.text_input(
+                    "**Location**",
+                    placeholder="e.g., Manufacturing Plant B, Assembly Line 3",
+                    help="Specific location where incident occurred",
+                    value=st.session_state.incident_data['location'],
+                    key="location_input"
+                )
                 
-                # Additional Information
-                st.markdown("### 🔍 Additional Information")
-                col_info1, col_info2 = st.columns(2)
+                st.session_state.incident_data['severity'] = severity
+                st.session_state.incident_data['location'] = location
+            
+            with col_info2:
+                date = st.date_input("**Date**", datetime.now(), key="date_input")
+                time = st.time_input("**Time**", datetime.now(), key="time_input")
                 
-                with col_info1:
-                    severity = st.select_slider(
-                        "**Severity Level**",
-                        options=["1 - Minor", "2 - Moderate", "3 - Serious", "4 - Severe", "5 - Critical"],
-                        value="3 - Serious",
-                        help="Based on actual or potential harm severity"
-                    )
-                    
-                    location = st.text_input(
-                        "**Location**",
-                        placeholder="e.g., Manufacturing Plant B, Assembly Line 3",
-                        help="Specific location where incident occurred"
-                    )
+                reported_by = st.text_input(
+                    "**Reported By** (Optional)",
+                    placeholder="Name/Department/ID",
+                    value=st.session_state.incident_data['reported_by'],
+                    key="reported_input"
+                )
                 
-                with col_info2:
-                    date = st.date_input("**Date**", datetime.now())
-                    time = st.time_input("**Time**", datetime.now())
-                    
-                    reported_by = st.text_input(
-                        "**Reported By** (Optional)",
-                        placeholder="Name/Department/ID"
-                    )
+                st.session_state.incident_data['reported_by'] = reported_by
+            
+            # Standards Selection - FIXED: Checkbox labels visible
+            st.markdown("### 📚 Applicable Standards")
+            std_col1, std_col2, std_col3, std_col4 = st.columns(4)
+            with std_col1:
+                iso45001 = st.checkbox("ISO 45001", value=True, key="iso45001_check")
+            with std_col2:
+                osha = st.checkbox("OSHA", value=True, key="osha_check")
+            with std_col3:
+                nebosh = st.checkbox("NEBOSH", value=True, key="nebosh_check")
+            with std_col4:
+                iso14001 = st.checkbox("ISO 14001", key="iso14001_check")
+            
+            # Submit Button
+            st.markdown("---")
+            submit_col1, submit_col2 = st.columns([3, 1])
+            with submit_col1:
+                submitted = st.button(
+                    "🚀 **Generate Institutional Report**",
+                    use_container_width=True,
+                    type="primary",
+                    key="submit_button"
+                )
+            with submit_col2:
+                preview = st.button(
+                    "👁️ **Preview Sample**",
+                    use_container_width=True,
+                    key="preview_button"
+                )
+            
+            if preview:
+                return {"preview": True}
+            
+            if submitted:
+                if not st.session_state.demo_mode and not st.session_state.api_key:
+                    st.error("⚠️ Please enter your DeepSeek API Key in the sidebar")
+                    return None
                 
-                # Standards Selection
-                st.markdown("### 📚 Applicable Standards")
-                std_col1, std_col2, std_col3, std_col4 = st.columns(4)
-                with std_col1:
-                    iso45001 = st.checkbox("ISO 45001", value=True)
-                with std_col2:
-                    osha = st.checkbox("OSHA", value=True)
-                with std_col3:
-                    nebosh = st.checkbox("NEBOSH", value=True)
-                with std_col4:
-                    iso14001 = st.checkbox("ISO 14001")
+                if not description or not location:
+                    st.warning("⚠️ Please fill in all required fields")
+                    return None
                 
-                # Submit Button
-                st.markdown("---")
-                submit_col1, submit_col2 = st.columns([3, 1])
-                with submit_col1:
-                    submitted = st.form_submit_button(
-                        "🚀 **Generate Institutional Report**",
-                        use_container_width=True,
-                        type="primary"
-                    )
-                with submit_col2:
-                    preview = st.form_submit_button(
-                        "👁️ **Preview Sample**",
-                        use_container_width=True
-                    )
-                
-                if preview:
-                    return {"preview": True}
-                
-                if submitted:
-                    if not st.session_state.demo_mode and not st.session_state.api_key:
-                        st.error("⚠️ Please enter your DeepSeek API Key in the sidebar")
-                        return None
-                    
-                    if not description or not location:
-                        st.warning("⚠️ Please fill in all required fields")
-                        return None
-                    
-                    return {
-                        "type": "incident",
-                        "description": description,
-                        "severity": severity,
-                        "location": location,
-                        "date": date.strftime('%Y-%m-%d'),
-                        "time": time.strftime('%H:%M'),
-                        "reported_by": reported_by,
-                        "standards": {
-                            "iso45001": iso45001,
-                            "osha": osha,
-                            "nebosh": nebosh,
-                            "iso14001": iso14001
-                        }
+                return {
+                    "type": "incident",
+                    "description": description,
+                    "severity": severity,
+                    "location": location,
+                    "date": date.strftime('%Y-%m-%d'),
+                    "time": time.strftime('%H:%M'),
+                    "reported_by": reported_by,
+                    "standards": {
+                        "iso45001": iso45001,
+                        "osha": osha,
+                        "nebosh": nebosh,
+                        "iso14001": iso14001
                     }
+                }
         
         with col2:
             # Information Panel
             st.markdown("### ℹ️ Information Panel")
             
             if st.session_state.demo_mode:
-                st.markdown('<div class="info-box">', unsafe_allow_html=True)
-                st.markdown("**🎯 Demo Mode Active**")
-                st.markdown("Using sample data for analysis")
-                st.markdown("</div>", unsafe_allow_html=True)
+                st.markdown("""
+                <div style='background: #DBEAFE; color: #1E40AF; padding: 1rem; border-radius: 8px; border-left: 4px solid #3B82F6; margin: 1rem 0;'>
+                    <strong>🎯 Demo Mode Active</strong><br>
+                    Using sample data for analysis
+                </div>
+                """, unsafe_allow_html=True)
             else:
-                st.markdown('<div class="success-box">', unsafe_allow_html=True)
-                st.markdown("**✅ API Mode Active**")
-                st.markdown("Using DeepSeek AI for analysis")
-                st.markdown("</div>", unsafe_allow_html=True)
+                st.markdown("""
+                <div style='background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 8px; border-left: 4px solid #10B981; margin: 1rem 0;'>
+                    <strong>✅ API Mode Active</strong><br>
+                    Using DeepSeek AI for analysis
+                </div>
+                """, unsafe_allow_html=True)
             
-            # Cost Estimation
+            # Cost Estimation - FIXED: Visible table
             st.markdown("### 💰 Cost Estimation")
             cost_data = pd.DataFrame({
                 'Type': ['Incident Report', 'Full Audit', 'Policy Review'],
                 'Cost': ['$0.02-0.05', '$0.05-0.10', '$0.03-0.06'],
                 'Time': ['10-20s', '15-30s', '10-15s']
             })
-            st.dataframe(cost_data, use_container_width=True, hide_index=True)
+            
+            # Display as styled HTML table
+            table_html = """
+            <table style='width: 100%; border-collapse: collapse; margin: 1rem 0;'>
+                <thead>
+                    <tr style='background: #3B82F6; color: white;'>
+                        <th style='padding: 0.8rem; text-align: left;'>Type</th>
+                        <th style='padding: 0.8rem; text-align: left;'>Cost</th>
+                        <th style='padding: 0.8rem; text-align: left;'>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+            """
+            
+            for idx, row in cost_data.iterrows():
+                bg_color = '#F9FAFB' if idx % 2 == 0 else '#FFFFFF'
+                table_html += f"""
+                <tr style='background: {bg_color};'>
+                    <td style='padding: 0.8rem; border: 1px solid #E5E7EB; color: #374151;'>{row['Type']}</td>
+                    <td style='padding: 0.8rem; border: 1px solid #E5E7EB; color: #374151;'>{row['Cost']}</td>
+                    <td style='padding: 0.8rem; border: 1px solid #E5E7EB; color: #374151;'>{row['Time']}</td>
+                </tr>
+                """
+            
+            table_html += "</tbody></table>"
+            st.markdown(table_html, unsafe_allow_html=True)
             
             # Quick Tips
             st.markdown("### 💡 Quick Tips")
-            st.markdown("""
-            1. **Be specific** with descriptions
-            2. **Include all facts**, not assumptions
-            3. **Note any witnesses**
-            4. **Document immediate actions**
-            5. **Take photos** if possible
-            """)
+            tips_html = """
+            <div style='background: #F9FAFB; padding: 1rem; border-radius: 8px; border: 1px solid #E5E7EB;'>
+                <ol style='color: #374151; padding-left: 1.2rem; margin: 0;'>
+                    <li style='margin: 0.3rem 0;'><strong>Be specific</strong> with descriptions</li>
+                    <li style='margin: 0.3rem 0;'><strong>Include all facts</strong>, not assumptions</li>
+                    <li style='margin: 0.3rem 0;'><strong>Note any witnesses</strong></li>
+                    <li style='margin: 0.3rem 0;'><strong>Document immediate actions</strong></li>
+                    <li style='margin: 0.3rem 0;'><strong>Take photos</strong> if possible</li>
+                </ol>
+            </div>
+            """
+            st.markdown(tips_html, unsafe_allow_html=True)
     
     return None
 
@@ -679,49 +839,14 @@ def render_analysis_result(result: dict, input_data: dict):
         st.markdown("---")
         
         if result["success"]:
-            # Parse and display the analysis properly
+            # Display the analysis with proper formatting
             display_formatted_analysis(result["analysis"])
         else:
             st.error(f"❌ Analysis failed: {result['analysis']}")
     
     with tab2:
         # Executive Summary View
-        st.markdown("### 🎯 Executive Summary")
-        
-        if result["success"]:
-            # Extract key sections
-            sections = extract_report_sections(result["analysis"])
-            
-            # Executive Summary
-            if "Executive Summary" in sections:
-                st.markdown(sections["Executive Summary"])
-            else:
-                # Find first paragraph
-                lines = result["analysis"].split('\n')
-                for line in lines:
-                    if line.strip() and not line.startswith('#') and len(line.strip()) > 50:
-                        st.markdown(line)
-                        break
-            
-            # Key Metrics
-            st.markdown("### 📊 Key Risk Metrics")
-            metrics_col1, metrics_col2, metrics_col3 = st.columns(3)
-            with metrics_col1:
-                st.metric("Overall Risk", "HIGH", delta=None)
-            with metrics_col2:
-                st.metric("Compliance Gaps", "2", delta="-1 vs last month")
-            with metrics_col3:
-                st.metric("Action Items", "9", delta="+3 urgent")
-            
-            # Quick Recommendations
-            st.markdown("### 🎯 Top Recommendations")
-            recs = extract_recommendations(result["analysis"])
-            for i, rec in enumerate(recs[:3], 1):
-                st.markdown(f"""
-                <div class="recommendation-item">
-                <strong>{i}. {rec}</strong>
-                </div>
-                """, unsafe_allow_html=True)
+        render_executive_summary(result)
     
     with tab3:
         # Analytics Dashboard
@@ -733,126 +858,114 @@ def render_analysis_result(result: dict, input_data: dict):
 
 def display_formatted_analysis(analysis_text: str):
     """Display analysis text with proper formatting"""
-    
     # Split by sections
-    lines = analysis_text.split('\n')
-    current_section = ""
-    current_content = []
+    sections = re.split(r'\n##\s+', analysis_text)
     
-    for line in lines:
-        # Check for section headers
-        if line.startswith('# '):
-            # Display previous section
-            if current_section:
-                render_section(current_section, '\n'.join(current_content))
-            
-            # Start new section
-            current_section = line[2:].strip()
-            current_content = []
-        
-        elif line.startswith('## '):
-            # Display previous section
-            if current_section:
-                render_section(current_section, '\n'.join(current_content))
-            
-            # Start new subsection
-            current_section = line[3:].strip()
-            current_content = []
-        
-        elif line.startswith('### '):
-            # Display previous section
-            if current_section:
-                render_section(current_section, '\n'.join(current_content))
-            
-            # Start new subsubsection
-            current_section = line[4:].strip()
-            current_content = []
-        
-        else:
-            current_content.append(line)
-    
-    # Display final section
-    if current_section:
-        render_section(current_section, '\n'.join(current_content))
+    for section in sections:
+        if section.strip():
+            # Extract title and content
+            lines = section.strip().split('\n')
+            if lines:
+                title = lines[0].strip('# ')
+                content = '\n'.join(lines[1:])
+                
+                if title:
+                    st.markdown(f'### {title}')
+                
+                if content:
+                    # Format content
+                    formatted_content = format_content(content)
+                    st.markdown(formatted_content)
+                
+                st.markdown("---")
 
-def render_section(title: str, content: str):
-    """Render a section with proper formatting"""
+def format_content(content: str) -> str:
+    """Format content with proper styling"""
+    formatted = content
     
-    # Clean up content
-    content = content.strip()
-    if not content:
-        return
-    
-    st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
-    
-    # Format content based on patterns
-    if any(marker in title.lower() for marker in ['recommendation', 'action', 'step']):
-        # Render as recommendations
-        items = [item.strip() for item in content.split('\n') if item.strip()]
-        for item in items:
-            if item.startswith(('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', '-', '*')):
-                cleaned = re.sub(r'^\d+\.\s*|^[-*]\s*', '', item)
-                st.markdown(f'<div class="recommendation-item">• {cleaned}</div>', unsafe_allow_html=True)
-            else:
-                st.markdown(f'<div style="margin: 0.5rem 0;">{item}</div>', unsafe_allow_html=True)
-    
-    elif any(marker in title.lower() for marker in ['table', 'matrix', 'assessment']):
-        # Try to render as table
-        rows = [row.strip() for row in content.split('\n') if '|' in row]
-        if len(rows) > 2:
-            # Parse markdown table
-            headers = [h.strip() for h in rows[0].split('|')[1:-1]]
-            data_rows = rows[2:]
+    # Format tables
+    if '|' in content and '-' in content:
+        # It's a markdown table, convert to HTML
+        lines = content.strip().split('\n')
+        if len(lines) > 2:
+            table_html = '<table class="data-table">'
             
-            table_html = '<table class="data-table"><thead><tr>'
+            # Header
+            headers = [h.strip() for h in lines[0].split('|')[1:-1]]
+            table_html += '<thead><tr>'
             for header in headers:
                 table_html += f'<th>{header}</th>'
             table_html += '</tr></thead><tbody>'
             
-            for row in data_rows:
-                cells = [cell.strip() for cell in row.split('|')[1:-1]]
-                table_html += '<tr>'
-                for cell in cells:
-                    table_html += f'<td>{cell}</td>'
-                table_html += '</tr>'
+            # Rows
+            for line in lines[2:]:
+                if '|' in line:
+                    cells = [cell.strip() for cell in line.split('|')[1:-1]]
+                    table_html += '<tr>'
+                    for cell in cells:
+                        table_html += f'<td>{cell}</td>'
+                    table_html += '</tr>'
             
             table_html += '</tbody></table>'
-            st.markdown(table_html, unsafe_allow_html=True)
-        else:
-            st.markdown(content)
+            formatted = table_html
     
-    elif any(marker in title.lower() for marker in ['cost', 'investment', 'roi']):
-        # Render with special styling
-        st.markdown(f'<div class="info-card">{content}</div>', unsafe_allow_html=True)
+    # Format lists
+    lines = formatted.split('\n')
+    formatted_lines = []
+    for line in lines:
+        if line.strip().startswith(('•', '-', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
+            formatted_lines.append(f'<div class="recommendation-item">{line}</div>')
+        elif line.strip():
+            formatted_lines.append(f'<p>{line}</p>')
     
-    else:
-        # Default rendering
-        st.markdown(content)
+    return '<br>'.join(formatted_lines)
 
-def extract_report_sections(analysis_text: str) -> dict:
-    """Extract sections from analysis text"""
-    sections = {}
-    current_section = None
-    current_content = []
+def render_executive_summary(result: dict):
+    """Render executive summary view"""
+    st.markdown("### 🎯 Executive Summary")
     
-    for line in analysis_text.split('\n'):
-        if line.startswith('# '):
-            if current_section:
-                sections[current_section] = '\n'.join(current_content).strip()
-            current_section = line[2:].strip()
-            current_content = []
-        elif line.startswith('## '):
-            if current_section:
-                sections[current_section] = '\n'.join(current_content).strip()
-            current_section = line[3:].strip()
-            current_content = []
-        elif current_section:
-            current_content.append(line)
-    
-    if current_section:
-        sections[current_section] = '\n'.join(current_content).strip()
-    
-    return sections
+    if result["success"]:
+        # Extract executive summary section
+        lines = result["analysis"].split('\n')
+        in_summary = False
+        summary_lines = []
+        
+        for line in lines:
+            if 'executive summary' in line.lower() or 'summary' in line.lower():
+                in_summary = True
+                continue
+            elif in_summary and line.strip().startswith('##'):
+                break
+            elif in_summary and line.strip():
+                summary_lines.append(line)
+        
+        if summary_lines:
+            st.markdown('\n'.join(summary_lines))
+        else:
+            # Show first paragraph
+            paragraphs = result["analysis"].split('\n\n')
+            if paragraphs:
+                st.markdown(paragraphs[0])
+        
+        # Key Metrics
+        st.markdown("### 📊 Key Risk Metrics")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Overall Risk", "HIGH", delta=None)
+        with col2:
+            st.metric("Compliance Gaps", "2", delta="-1 vs last month")
+        with col3:
+            st.metric("Action Items", "9", delta="+3 urgent")
+        
+        # Top Recommendations
+        st.markdown("### 🎯 Top Recommendations")
+        recs = extract_recommendations(result["analysis"])
+        for i, rec in enumerate(recs[:3], 1):
+            st.markdown(f"""
+            <div style='background: #EFF6FF; padding: 1rem; margin: 0.5rem 0; border-radius: 8px; border-left: 4px solid #3B82F6; color: #1F2937;'>
+                <strong>{i}. {rec}</strong>
+            </div>
+            """, unsafe_allow_html=True)
 
 def extract_recommendations(analysis_text: str) -> list:
     """Extract recommendations from analysis"""
@@ -862,16 +975,14 @@ def extract_recommendations(analysis_text: str) -> list:
     for line in lines:
         line = line.strip()
         if line.startswith(('•', '-', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
-            # Clean the bullet/number
             cleaned = re.sub(r'^[•\-*]\s*|\d+\.\s*', '', line)
-            if cleaned and len(cleaned) > 10:  # Filter out very short items
+            if cleaned and len(cleaned) > 10:
                 recs.append(cleaned)
     
-    return recs[:10]  # Return top 10
+    return recs[:10]
 
 def render_analytics_dashboard():
     """Render analytics dashboard"""
-    
     if st.session_state.analysis_history:
         df = pd.DataFrame(st.session_state.analysis_history)
         df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -882,7 +993,6 @@ def render_analytics_dashboard():
         col1, col2 = st.columns(2)
         
         with col1:
-            # Cost over time
             daily_cost = df.groupby('date')['cost'].sum().reset_index()
             fig = px.line(daily_cost, x='date', y='cost',
                          title='Daily Analysis Cost',
@@ -891,7 +1001,6 @@ def render_analytics_dashboard():
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            # Analysis type distribution
             type_counts = df['type'].value_counts()
             fig = px.pie(values=type_counts.values,
                         names=type_counts.index,
@@ -909,15 +1018,12 @@ def render_analytics_dashboard():
             st.metric("Avg Cost/Report", f"${avg_cost:.3f}")
         with col_sum4:
             st.metric("Total Tokens", f"{df['tokens'].sum():,}")
-    
     else:
         st.info("No analysis history yet. Generate your first report to see analytics here.")
 
 def render_export_options(result: dict, input_data: dict):
     """Render export options"""
-    
     if result["success"]:
-        # Create export content
         export_content = f"""COMPLIANCE SENTINEL - INSTITUTIONAL REPORT
 ===========================================
 Generated: {datetime.now().strftime('%d %B %Y, %H:%M:%S')}
@@ -931,7 +1037,6 @@ Estimated Cost: ${result['cost']:.4f}
 Confidential - For Internal Use Only
 Generated by Compliance Sentinel AI Analysis System"""
         
-        # Export buttons
         col1, col2, col3 = st.columns(3)
         
         with col1:
@@ -945,8 +1050,6 @@ Generated by Compliance Sentinel AI Analysis System"""
         
         with col2:
             if st.button("📋 Copy to Clipboard", use_container_width=True):
-                # For Streamlit Cloud, we can't actually copy to clipboard
-                # So we show the content in an expander
                 with st.expander("📋 Report Content (Copy from here)"):
                     st.code(export_content[:2000] + "..." if len(export_content) > 2000 else export_content)
         
@@ -979,7 +1082,6 @@ def main():
             else:
                 # Perform analysis
                 with st.spinner("🧠 Performing institutional analysis..."):
-                    # Create prompt
                     system_prompt = """You are a senior HSE consultant at PricewaterhouseCoopers. Provide institutional-grade incident analysis."""
                     user_prompt = f"""Analyze this incident:
                     
@@ -990,7 +1092,6 @@ def main():
                     
                     Provide comprehensive PwC-style analysis."""
                     
-                    # Get analysis
                     client = DeepSeekAPIClient(st.session_state.api_key if not st.session_state.demo_mode else "demo")
                     result = client.analyze(system_prompt, user_prompt)
                 
@@ -999,7 +1100,6 @@ def main():
                 render_analysis_result(result, form_data)
     
     else:
-        # Placeholder for other analysis types
         st.markdown('<div class="sub-header">Coming Soon</div>', unsafe_allow_html=True)
         st.info("Other analysis types (Audit, Policy Review, ESG, Risk Assessment) will be available in the next update.")
 
